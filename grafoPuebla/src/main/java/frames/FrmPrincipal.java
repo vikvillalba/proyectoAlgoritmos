@@ -258,7 +258,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInicioMouseClicked
 
     private void btnTablaNodosAristasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablaNodosAristasActionPerformed
-        this.setTitle("Grafo del estado de Puebla - Tabla de vértices y aristas");
+        FrmTablaGrafo tablaGrafo = new FrmTablaGrafo();
+        tablaGrafo.setVisible(true);
     }//GEN-LAST:event_btnTablaNodosAristasActionPerformed
 
     private void btnGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoActionPerformed

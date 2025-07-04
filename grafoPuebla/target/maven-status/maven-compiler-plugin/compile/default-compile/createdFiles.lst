@@ -1,9 +1,17 @@
+frames/FrmTablaGrafo$1.class
+frames/FrmPrincipal$12.class
+grafo/NodoAdy.class
 frames/FrmPrincipal$3.class
 frames/FrmPrincipal$4.class
 frames/FrmPrincipal.class
+grafo/Grafo.class
+grafo/Nodo.class
 frames/FrmPrincipal$9.class
 frames/FrmPrincipal$5.class
 frames/FrmPrincipal$2.class
+grafo/GrafoPueblaUtil.class
+frames/FrmPrincipal$11.class
+frames/FrmTablaGrafo.class
 frames/FrmPrincipal$1.class
 frames/FrmPrincipal$6.class
 frames/FrmPrincipal$7.class
