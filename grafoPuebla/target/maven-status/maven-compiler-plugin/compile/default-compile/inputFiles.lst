@@ -6,3 +6,5 @@
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/grafo/Grafo.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/FrmTablaGrafo.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/PnlInicio.java
+/Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/rutaMasCorta/RutaMasCorta.java
+/Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/rutaMasCorta/Dijkstra.java

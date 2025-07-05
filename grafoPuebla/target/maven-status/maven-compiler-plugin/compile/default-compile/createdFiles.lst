@@ -5,6 +5,7 @@ frames/FrmPrincipal$3.class
 frames/FrmPrincipal$4.class
 frames/FrmPrincipal.class
 grafo/Grafo.class
+rutaMasCorta/RutaMasCorta.class
 grafo/Nodo.class
 frames/FrmPrincipal$9.class
 frames/FrmPrincipal$5.class
@@ -14,6 +15,7 @@ frames/FrmPrincipal$11.class
 frames/FrmTablaGrafo.class
 frames/FrmPrincipal$1.class
 frames/FrmPrincipal$6.class
+rutaMasCorta/Dijkstra.class
 frames/FrmPrincipal$7.class
 frames/PnlInicio.class
 frames/FrmPrincipal$10.class
