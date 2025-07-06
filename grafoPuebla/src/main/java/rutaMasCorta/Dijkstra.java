@@ -1,5 +1,6 @@
 package rutaMasCorta;
 
+import frames.PnlDijkstra;
 import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
@@ -8,6 +9,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import javax.swing.SwingUtilities;
 
 /**
  * implementación del algoritmo Dijkstra para calcular la ruta más corta de un nodo origen a un nodo destino.
@@ -15,6 +17,12 @@ import java.util.PriorityQueue;
  * @author victoria
  */
 public class Dijkstra {
+
+    private static PnlDijkstra panelVisualizacion;
+
+    public static void setPanelVisualizacion(PnlDijkstra panel) {
+        panelVisualizacion = panel;
+    }
 
     /**
      * cálculo de la ruta más corta entre un par de nodos implementando el algoritmo Dijkstra.
@@ -24,6 +32,10 @@ public class Dijkstra {
      * @return lista de nodos que representa la trayectoria de menor peso entre ambos vértices
      */
     public static LinkedList<Nodo> ejecutar(String inicio, String fin) {
+        if (panelVisualizacion != null) {
+            panelVisualizacion.reiniciarProceso();
+        }
+
         Grafo grafo = GrafoPueblaUtil.getGrafo(); // obtener el grafo
         Nodo origen = grafo.buscarNodo(inicio);
         Nodo destino = grafo.buscarNodo(fin);
@@ -45,10 +57,18 @@ public class Dijkstra {
         // configura los nodos e inicializa la fuente
         RutaMasCorta.initializeSingleSource(grafoNodos, origen);
 
+        if (panelVisualizacion != null) {
+            actualizarVisualizacion(origen.getNombre());
+        }
+
         // mientras la cola tenga nodos
         while (!cola.isEmpty()) {
             Nodo actual = cola.poll(); // extrae nodo actual
             System.out.print("\nProcesando: " + actual.getNombre());
+            if (panelVisualizacion != null) {
+                actualizarVisualizacion(actual.getNombre());
+            }
+
             // si ya llegó al destino
             if (actual.equals(destino)) {
                 System.out.println("\nDestino alcanzado");
@@ -59,6 +79,11 @@ public class Dijkstra {
             while (adyacente != null) {
                 // obtiene el nodo 
                 System.out.print("\nProcesando nodo vecino: " + adyacente.getNombre());
+
+                if (panelVisualizacion != null) {
+                    marcarAristaVisitada(actual.getNombre(), adyacente.getNombre());
+                }
+
                 Nodo vecino = grafo.buscarNodo(adyacente.getNombre());
                 if (vecino != null) {
                     double distanciaAnterior = vecino.getDistanciaTemporal();
@@ -72,12 +97,36 @@ public class Dijkstra {
                 }
 
                 adyacente = adyacente.getSiguiente();
+                if (panelVisualizacion != null) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         // obtiene la trayectoria
         System.out.println("Procesamiento completado.");
-        return RutaMasCorta.obtenerTrayectoria(destino);
+        LinkedList<Nodo> ruta = RutaMasCorta.obtenerTrayectoria(destino);
 
+        if (panelVisualizacion != null) {
+            panelVisualizacion.setRutaFinal(ruta);
+        }
+
+        return ruta;
+    }
+
+    private static void actualizarVisualizacion(String nombreNodo) {
+        SwingUtilities.invokeLater(() -> {
+            panelVisualizacion.marcarNodoVisitado(nombreNodo);
+        });
+    }
+
+    private static void marcarAristaVisitada(String origen, String destino) {
+        SwingUtilities.invokeLater(() -> {
+            panelVisualizacion.marcarAristaVisitada(origen, destino);
+        });
     }
 
 }

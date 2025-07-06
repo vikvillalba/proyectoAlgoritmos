@@ -6,6 +6,7 @@ grafo/Nodo.class
 frames/FrmPrincipal$5.class
 frames/FrmPrincipal$11.class
 frames/FrmPrincipal$1.class
+frames/PnlDijkstra.class
 ArbolDeExpansionMinima/UnionFind.class
 rutaMasCorta/Dijkstra.class
 frames/PnlGrafo.class
@@ -17,6 +18,7 @@ frames/FrmPrincipal$4.class
 frames/FrmPrincipal.class
 grafo/Grafo.class
 ArbolDeExpansionMinima/Kruskal.class
+frames/FrmElegirLocalidades$1.class
 frames/FrmPrincipal$9.class
 frames/FrmPrincipal$2.class
 grafo/GrafoPueblaUtil.class
@@ -26,4 +28,5 @@ frames/FrmPrincipal$6.class
 ArbolDeExpansionMinima/Prim.class
 frames/FrmPrincipal$7.class
 frames/FrmPrincipal$10.class
+frames/FrmElegirLocalidades.class
 ArbolDeExpansionMinima/Boruvka.class

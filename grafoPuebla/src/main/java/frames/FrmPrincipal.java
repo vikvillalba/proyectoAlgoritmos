@@ -285,6 +285,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void btnDijkstraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDijkstraActionPerformed
         this.setTitle("Grafo del estado de Puebla - Ruta más corta Dijkstra");
+        FrmElegirLocalidades elegirLocalidad = new FrmElegirLocalidades(this, "DIJKSTRA");
+        elegirLocalidad.setVisible(true);
     }//GEN-LAST:event_btnDijkstraActionPerformed
 
     private void btnReportesComplejidadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportesComplejidadMouseClicked
