@@ -4,8 +4,8 @@ import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
 import grafo.NodoAdy;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -23,7 +23,7 @@ public class Dijkstra {
      * @param fin nodo hasta al que llega la trayectoria.
      * @return lista de nodos que representa la trayectoria de menor peso entre ambos vértices
      */
-    public static List<Nodo> ejecutar(String inicio, String fin) {
+    public static LinkedList<Nodo> ejecutar(String inicio, String fin) {
         Grafo grafo = GrafoPueblaUtil.getGrafo(); // obtener el grafo
         Nodo origen = grafo.buscarNodo(inicio);
         Nodo destino = grafo.buscarNodo(fin);
@@ -31,13 +31,13 @@ public class Dijkstra {
         // si alguno de los nodos no existe
         if (origen == null || destino == null) {
             System.out.println("Alguno de los nodos es nulo o incorrecto.");
-            return new ArrayList<>();
+            return new LinkedList<>();
         }
 
         System.out.println("Calculando ruta: " + inicio + " -> " + fin);
 
         // obtener los nodos del grafo
-        List<Nodo> grafoNodos = RutaMasCorta.getNodosGrafo(grafo);
+        List<Nodo> grafoNodos = grafo.getNodosGrafo();
         // PriorityQueue organiza los vértices del grafo de menor a mayor
         PriorityQueue<Nodo> cola = new PriorityQueue<>(Comparator.comparingDouble(Nodo::getDistanciaTemporal));
         cola.addAll(grafoNodos);

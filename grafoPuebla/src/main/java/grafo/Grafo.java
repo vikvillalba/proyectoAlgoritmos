@@ -4,7 +4,6 @@
  */
 package grafo;
 
-
 /**
  *
  * @author erika
@@ -14,39 +13,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase que representa un grafo no dirigido implementado con listas de adyacencia.
- * Cada nodo del grafo tiene una lista de nodos adyacentes con sus respectivas distancias.
+ * Clase que representa un grafo no dirigido implementado con listas de adyacencia. Cada nodo del grafo tiene una lista de nodos adyacentes con sus respectivas distancias.
  */
 public class Grafo {
+
     private LinkedList<Nodo>[] grafo; // Array de listas enlazadas para representar el grafo
     private int cantNodos;           // Cantidad actual de nodos en el grafo
     private int size;                // Tamaño máximo del grafo
 
     /**
      * Constructor que inicializa el grafo con un tamaño específico.
+     *
      * @param size Tamaño máximo del grafo (número máximo de nodos)
      */
     public Grafo(int size) {
         this.grafo = new LinkedList[size];
         this.size = size;
         this.cantNodos = 0;
-        
+
         // Inicializar cada posición del array con una nueva LinkedList
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             grafo[i] = new LinkedList<>();
         }
     }
-    
+
     /**
      * Obtiene la estructura completa del grafo.
+     *
      * @return Array de LinkedList que representa el grafo
      */
     public LinkedList<Nodo>[] getGrafo() {
-        return grafo; 
+        return grafo;
     }
-    
+
     /**
      * Agrega un nuevo nodo al grafo si no existe previamente.
+     *
      * @param nombre Nombre del nodo a agregar
      */
     public void agregarNodo(String nombre) {
@@ -69,14 +71,15 @@ public class Grafo {
         grafo[cantNodos].add(localidad);
         cantNodos++;
     }
-    
+
     /**
      * Elimina un nodo del grafo y todas sus aristas relacionadas.
+     *
      * @param nombre Nombre del nodo a eliminar
      */
     public void eliminarNodo(String nombre) {
         boolean encontrado = false;
-        
+
         // Buscar y eliminar el nodo principal
         for (int i = 0; i < cantNodos; i++) {
             if (!grafo[i].isEmpty() && grafo[i].getFirst().getNombre().equals(nombre)) {
@@ -87,11 +90,11 @@ public class Grafo {
                     eliminarAristaDeNodo(adyacente.getNombre(), nombre);
                     adyacente = adyacente.getSiguiente();
                 }
-                
+
                 // Eliminar el nodo
                 grafo[i].clear();
                 encontrado = true;
-                
+
                 // Reorganizar los nodos para no dejar espacios vacíos
                 if (i < cantNodos - 1) {
                     grafo[i] = grafo[cantNodos - 1];
@@ -101,28 +104,30 @@ public class Grafo {
                 break;
             }
         }
-        
+
         if (!encontrado) {
             System.out.println("Nodo no encontrado: " + nombre);
         }
     }
-    
+
     /**
      * Busca un nodo en el grafo por su nombre.
+     *
      * @param nombre Nombre del nodo a buscar
      * @return El nodo encontrado o null si no existe
      */
     public Nodo buscarNodo(String nombre) {
-        for(int i = 0; i < cantNodos; i++) {
+        for (int i = 0; i < cantNodos; i++) {
             if (!grafo[i].isEmpty() && grafo[i].getFirst().getNombre().equals(nombre)) {
                 return grafo[i].getFirst();
             }
         }
         return null;
     }
-    
+
     /**
      * Agrega un nodo adyacente a la lista de adyacencia de un nodo.
+     *
      * @param nodo Nodo al que se le agregará el adyacente
      * @param nuevoAdyacente Nodo adyacente a agregar
      */
@@ -148,9 +153,10 @@ public class Grafo {
             aux.setSiguiente(nuevoAdyacente);
         }
     }
-    
+
     /**
      * Agrega una arista no dirigida entre dos nodos.
+     *
      * @param origen Nombre del nodo origen
      * @param destino Nombre del nodo destino
      * @param distancia Distancia entre los nodos
@@ -171,9 +177,10 @@ public class Grafo {
         NodoAdy nodoAdyDestino = new NodoAdy(origen, distancia);
         agregarNodoAdyacente(nodoDestino, nodoAdyDestino);
     }
-    
+
     /**
      * Elimina una arista del grafo (en ambas direcciones).
+     *
      * @param origen Nodo origen de la arista
      * @param arista Nodo adyacente que representa la arista a eliminar
      */
@@ -182,10 +189,10 @@ public class Grafo {
             System.out.println("Parámetros inválidos");
             return;
         }
-        
+
         NodoAdy prev = null;
         NodoAdy actual = origen.getSiguiente();
-        
+
         // Buscar y eliminar la arista en el nodo origen
         while (actual != null) {
             if (actual.getNombre().equals(arista.getNombre())) {
@@ -199,26 +206,29 @@ public class Grafo {
             prev = actual;
             actual = actual.getSiguiente();
         }
-        
+
         // Eliminar la arista en el nodo destino (grafo no dirigido)
         Nodo nodoDestino = buscarNodo(arista.getNombre());
         if (nodoDestino != null) {
             eliminarAristaDeNodo(arista.getNombre(), origen.getNombre());
         }
     }
-    
+
     /**
      * Método auxiliar para eliminar una arista de un nodo específico.
+     *
      * @param nombreNodo Nombre del nodo del que se eliminará la arista
      * @param nombreArista Nombre del nodo adyacente a eliminar
      */
     private void eliminarAristaDeNodo(String nombreNodo, String nombreArista) {
         Nodo nodo = buscarNodo(nombreNodo);
-        if (nodo == null) return;
-        
+        if (nodo == null) {
+            return;
+        }
+
         NodoAdy prev = null;
         NodoAdy actual = nodo.getSiguiente();
-        
+
         while (actual != null) {
             if (actual.getNombre().equals(nombreArista)) {
                 if (prev == null) {
@@ -232,9 +242,10 @@ public class Grafo {
             actual = actual.getSiguiente();
         }
     }
-    
+
     /**
      * Obtiene una lista iterable de todos los nodos del grafo.
+     *
      * @return Lista de nodos del grafo
      */
     public Iterable<Nodo> getNodos() {
@@ -247,5 +258,21 @@ public class Grafo {
         return nodos;
     }
 
+    /**
+     * Obtiene los nodos del grafo actual en formato de LinkedList.
+     *
+     * @return LinkedList con todos los nodos del grafo
+     */
+    public LinkedList<Nodo> getNodosGrafo() {
+        LinkedList<Nodo> nodos = new LinkedList<>();
+        // Solo iterar hasta cantNodos para evitar nodos vacíos
+        for (int i = 0; i < this.cantNodos; i++) {
+            LinkedList<Nodo> lista = this.grafo[i];
+            if (!lista.isEmpty()) {
+                nodos.add(lista.getFirst());
+            }
+        }
+        return nodos;
+    }
 
 }

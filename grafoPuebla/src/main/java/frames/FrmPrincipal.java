@@ -264,6 +264,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void btnGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoActionPerformed
         this.setTitle("Grafo del estado de Puebla - Representación gráfica");
+        pintarContenedor(new PnlGrafo());
     }//GEN-LAST:event_btnGraficoActionPerformed
 
     private void btnKruskalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKruskalActionPerformed

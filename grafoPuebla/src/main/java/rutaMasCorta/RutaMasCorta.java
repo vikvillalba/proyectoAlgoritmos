@@ -43,8 +43,8 @@ public class RutaMasCorta {
         double distanciaNueva = u.getDistanciaTemporal() + peso;
 
         if (distanciaActual > distanciaNueva) {  // si encuentra una distancia más corta
-            v.setDistanciaTemporal(distanciaNueva);
-            v.setAnterior(u);
+            v.setDistanciaTemporal(distanciaNueva); // actualiza la distancia
+            v.setAnterior(u); // actualiza el nodo predecesor
 
             System.out.println("\n[Relajación] Distancia actualizada para " + v.getNombre()
                     + "\nDesde: " + u.getNombre()
@@ -58,33 +58,18 @@ public class RutaMasCorta {
         }
     }
 
-    /**
-     * Obtiene los nodos de un grafo.
-     *
-     * @param grafo
-     * @return los nodos del grafo en una lista
-     */
-    public static List<Nodo> getNodosGrafo(Grafo grafo) {
-        List<Nodo> nodos = new ArrayList<>();
-        for (LinkedList<Nodo> lista : grafo.getGrafo()) {
-            if (!lista.isEmpty()) {
-                nodos.add(lista.getFirst());
-            }
-        }
-        return nodos;
-    }
 
     /**
      * Obtiene y muestra la trayectoria desde el origen hasta el nodo destino
      *
      * @param destino Nodo final de la trayectoria
-     * @return Lista de nodos en orden desde el origen al destino
+     * @return Lista de nodos que conforman una trayectoria en orden desde el origen al destino
      */
-    public static List<Nodo> obtenerTrayectoria(Nodo destino) {
-        List<Nodo> trayectoria = new ArrayList<>();
+    public static LinkedList<Nodo> obtenerTrayectoria(Nodo destino) {
+        LinkedList<Nodo> trayectoria = new LinkedList<>();
 
         if (destino == null) {
-            System.out.println("No existe trayectoria (nodo destino es nulo)");
+            System.out.println("No existe trayectoria.");
             return trayectoria;
         }
 
