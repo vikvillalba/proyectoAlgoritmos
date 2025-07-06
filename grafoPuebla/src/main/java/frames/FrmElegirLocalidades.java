@@ -138,8 +138,9 @@ public class FrmElegirLocalidades extends javax.swing.JFrame {
         if (this.tipoRuta.equals("DIJKSTRA")) {
             inicio.pintarContenedor(new PnlDijkstra(localidadInicio, localidadFin));
             this.dispose();
-        } else if (this.tipoRuta.equals("BELLMAN-FORD")) { // si se llama desde la opción de bellman-ford
-
+        } else if (this.tipoRuta.equals("BELLMAN")) { // si se llama desde la opción de bellman-ford
+            inicio.pintarContenedor(new PnlBellmanFord(localidadInicio, localidadFin));
+            this.dispose();
         }
 
 

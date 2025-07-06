@@ -27,6 +27,8 @@ frames/FrmTablaGrafo.class
 frames/FrmPrincipal$6.class
 ArbolDeExpansionMinima/Prim.class
 frames/FrmPrincipal$7.class
+rutaMasCorta/BellmanFord.class
 frames/FrmPrincipal$10.class
+frames/PnlBellmanFord.class
 frames/FrmElegirLocalidades.class
 ArbolDeExpansionMinima/Boruvka.class

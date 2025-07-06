@@ -117,12 +117,18 @@ public class Dijkstra {
         return ruta;
     }
 
+    /**
+     * Actualiza la visualización de un determinado nodo en la interfaz gráfica.
+     */
     private static void actualizarVisualizacion(String nombreNodo) {
         SwingUtilities.invokeLater(() -> {
             panelVisualizacion.marcarNodoVisitado(nombreNodo);
         });
     }
 
+    /**
+     * Actualiza el estado de una arista cuando el algoritmo ya la visitó.
+     */
     private static void marcarAristaVisitada(String origen, String destino) {
         SwingUtilities.invokeLater(() -> {
             panelVisualizacion.marcarAristaVisitada(origen, destino);

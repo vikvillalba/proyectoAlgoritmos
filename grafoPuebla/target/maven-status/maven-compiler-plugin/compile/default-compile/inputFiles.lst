@@ -2,6 +2,7 @@
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/ArbolDeExpansionMinima/Prim.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/ArbolDeExpansionMinima/Kruskal.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/grafo/NodoAdy.java
+/Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/rutaMasCorta/BellmanFord.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/FrmElegirLocalidades.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/grafo/GrafoPueblaUtil.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/grafo/Grafo.java
@@ -14,5 +15,6 @@
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/com/mycompany/grafopuebla/GrafoPuebla.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/FrmTablaGrafo.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/PnlInicio.java
+/Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/frames/PnlBellmanFord.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/rutaMasCorta/RutaMasCorta.java
 /Users/victoria/Documents/GitHub/proyectoAlgoritmos/grafoPuebla/src/main/java/rutaMasCorta/Dijkstra.java

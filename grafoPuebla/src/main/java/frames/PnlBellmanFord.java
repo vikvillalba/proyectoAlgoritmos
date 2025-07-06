@@ -10,14 +10,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import rutaMasCorta.Dijkstra;
+import javax.swing.JOptionPane;
+import rutaMasCorta.BellmanFord;
 
 /**
  * Panel que muestra de manera gráfica el procesamiento del algoritmo dijkstra
  *
  * @author victoria
  */
-public class PnlDijkstra extends javax.swing.JPanel {
+public class PnlBellmanFord extends javax.swing.JPanel {
 
     private Grafo grafo; // Grafo a visualizar
     private Map<String, Point> posiciones; // Coordenadas de cada localidad
@@ -30,7 +31,11 @@ public class PnlDijkstra extends javax.swing.JPanel {
     private LinkedList<Nodo> rutaFinal = new LinkedList<>();
     private boolean procesoCompleto = false;
 
-    public PnlDijkstra(String inicio, String fin) {
+    private int iteracionActual = 0;
+    private Set<String> nodosProcesadosIteracion = new HashSet<>();
+    private Set<String> aristasProcesadasIteracion = new HashSet<>();
+
+    public PnlBellmanFord(String inicio, String fin) {
         initComponents();
         this.inicio = inicio;
         this.fin = fin;
@@ -39,13 +44,12 @@ public class PnlDijkstra extends javax.swing.JPanel {
         setBackground(Color.WHITE);
         inicializarPosiciones();
 
-        Dijkstra.setPanelVisualizacion(this);
-
+        BellmanFord.setPanelVisualizacion(this);
         // inicializa el hilo de ejecución
         new Thread(() -> {
             try {
                 Thread.sleep(300);
-                LinkedList<Nodo> ruta = Dijkstra.ejecutar(inicio, fin);
+                LinkedList<Nodo> ruta = BellmanFord.ejecutar(inicio, fin);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -63,25 +67,22 @@ public class PnlDijkstra extends javax.swing.JPanel {
         repaint();
     }
 
-    /**
-     * Marca un nodo que ya se ha visitado durante el procesamiento
-     *
-     * @param nombreNodo. Nombre del nodo que ya fue visitado
-     */
+    public void nuevaIteracion(int numeroIteracion) {
+        this.iteracionActual = numeroIteracion;
+        this.nodosProcesadosIteracion.clear();
+        this.aristasProcesadasIteracion.clear();
+        repaint();
+    }
+
     public void marcarNodoVisitado(String nombreNodo) {
+        nodosProcesadosIteracion.add(nombreNodo);
         nodosVisitados.add(nombreNodo);
         repaint();
     }
 
-    /**
-     * Marca una arista que ya se ha visitado durante el procesamiento
-     *
-     * @param origen localidad origen de la arista
-     * @param destino localidad destino de la arista
-     */
     public void marcarAristaVisitada(String origen, String destino) {
-        String key = origen.compareTo(destino) < 0 // ordena para evitar aristas duplicadas
-                ? origen + "-" + destino : destino + "-" + origen;
+        String key = origen.compareTo(destino) < 0 ? origen + "-" + destino : destino + "-" + origen;
+        aristasProcesadasIteracion.add(key);
         aristasVisitadas.add(key);
         repaint();
     }
@@ -153,24 +154,44 @@ public class PnlDijkstra extends javax.swing.JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Dibuja las aristas en gris claro
+        // Dibujar todas las aristas en gris 
         g2d.setColor(new Color(200, 200, 200));
         dibujarAristas(g2d, false);
 
-        // Dibuja las aristas que se van visitando
-        g2d.setColor(Color.ORANGE);
+        // Dibujar aristas visitadas en iteraciones anteriores
+        g2d.setColor(new Color(255, 211, 135));
         dibujarAristas(g2d, true);
 
-        // Dibujar la ruta final si el proceso está completo
+        // Dibujar aristas de la iteración actual en rojo
+        g2d.setColor(Color.RED);
+        dibujarAristasIteracionActual(g2d);
+
+        // Dibujar ruta final si está completa
         if (procesoCompleto && !rutaFinal.isEmpty()) {
-            g2d.setColor(new Color(208, 104, 119));
-            g2d.setStroke(new BasicStroke(3));
+            g2d.setColor(new Color(120, 187, 150)); 
+            g2d.setStroke(new BasicStroke(3)); // Hacer la ruta final más gruesa
             dibujarRutaFinal(g2d);
             g2d.setStroke(new BasicStroke(1));
         }
 
-        // Dibujar todos los nodos
         dibujarNodos(g2d);
+
+        // Mostrar número de iteración
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.drawString("Iteración: " + iteracionActual, 20, 30);
+    }
+
+    private void dibujarAristasIteracionActual(Graphics2D g2d) {
+        for (String aristaKey : aristasProcesadasIteracion) {
+            String[] nodos = aristaKey.split("-");
+            Point p1 = posiciones.get(nodos[0]);
+            Point p2 = posiciones.get(nodos[1]);
+
+            if (p1 != null && p2 != null) {
+                g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+            }
+        }
     }
 
     /**
@@ -228,57 +249,48 @@ public class PnlDijkstra extends javax.swing.JPanel {
     }
 
     /**
-     * Dibuja nodos del grafo. 
-     * pinta nodos de color rojo si pertenecen a la ruta final, grises en caso contrario
-     * pinta nodos amarillos cuando apenas están siendo procesados por el algoritmo.
+     * Dibuja nodos del grafo.
      */
     private void dibujarNodos(Graphics2D g2d) {
         for (Map.Entry<String, Point> entry : posiciones.entrySet()) {
             String nombre = entry.getKey();
             Point posicion = entry.getValue();
 
+            // Determinar color del nodo
             Color colorNodo;
             if (procesoCompleto) {
-                boolean estaEnRuta = false;
-                for (Nodo nodo : rutaFinal) {
-                    if (nodo.getNombre().equals(nombre)) {
-                        estaEnRuta = true;
-                        break;
-                    }
-                }
-
-                if (estaEnRuta) {
-                    colorNodo = new Color(241, 192, 192);  // rojo para nodos de la ruta
-                } else {
-                    colorNodo = new Color(200, 200, 200); // gris para otros nodos
-                }
-
+                // Después de completar
+                boolean enRuta = rutaFinal.stream().anyMatch(n -> n.getNombre().equals(nombre));
+                colorNodo = enRuta ? new Color(151, 224, 184) : new Color(200, 200, 200); // Verde para ruta, gris para otros
+            } else if (nodosProcesadosIteracion.contains(nombre)) {
+                // Nodos de la iteración actual
+                colorNodo = new Color(241, 192, 192); 
+            } else if (nodosVisitados.contains(nombre)) {
+                
+                // Nodos visitados en iteraciones anteriores
+                colorNodo = new Color(255, 200, 100);
             } else {
-
-                if (nodosVisitados.contains(nombre)) {
-                    colorNodo = new Color(255, 211, 135); // amarillo para nodos visitados
-                } else {
-                    colorNodo = new Color(200, 200, 200); // gris para nodos no visitados
-                }
+                
+                // Nodos no visitados
+                colorNodo = new Color(220, 220, 220); // Gris 
             }
 
-            // Dibujar el círculo
+            // Dibujar nodo 
             int radio = 20;
-            int x = posicion.x - (radio / 2);
-            int y = posicion.y - (radio / 2);
             g2d.setColor(colorNodo);
-            g2d.fillOval(x, y, radio, radio);
+            g2d.fillOval(posicion.x - radio / 2, posicion.y - radio / 2, radio, radio);
 
-            // Escribir el nombre de la localidad dentro del círculo
+            // Dibujar nombre del nodo
             g2d.setColor(Color.BLACK);
             FontMetrics fm = g2d.getFontMetrics();
-            int nombreAncho = fm.stringWidth(nombre);
-            int nombreAlto = fm.getHeight();
-
-            int textoX = posicion.x - (nombreAncho / 2);
-            int textoY = posicion.y + (nombreAlto / 4);
+            int textoX = posicion.x - fm.stringWidth(nombre) / 2;
+            int textoY = posicion.y + fm.getAscent() / 2;
             g2d.drawString(nombre, textoX, textoY);
         }
+    }
+
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
