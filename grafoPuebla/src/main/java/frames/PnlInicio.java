@@ -35,7 +35,7 @@ public class PnlInicio extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(602, 602, 602)
                 .addComponent(jLabel1)
-                .addContainerGap(1195, Short.MAX_VALUE))
+                .addContainerGap(995, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

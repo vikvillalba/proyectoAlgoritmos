@@ -20,7 +20,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     public void pintarContenedor(JPanel panel) {
         pnlContenido.setViewportView(panel);
         pnlContenido.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        pnlContenido.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pnlContenido.revalidate();
         pnlContenido.repaint();
         panel.revalidate();
@@ -56,11 +55,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnSalir = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(2000, 1000));
+        setPreferredSize(new java.awt.Dimension(1700, 900));
 
         pnlContenedor.setSize(new java.awt.Dimension(100, 70));
 
         pnlContenido.setBorder(null);
+        pnlContenido.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         pnlContenido.setPreferredSize(new java.awt.Dimension(2000, 900));
 
         javax.swing.GroupLayout pnlContenedorLayout = new javax.swing.GroupLayout(pnlContenedor);
