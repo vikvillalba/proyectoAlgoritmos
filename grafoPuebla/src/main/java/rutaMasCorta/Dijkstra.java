@@ -99,7 +99,7 @@ public class Dijkstra {
                 adyacente = adyacente.getSiguiente();
                 if (panelVisualizacion != null) {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
