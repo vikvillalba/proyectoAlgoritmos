@@ -20,6 +20,7 @@ frames\PnlInicio.class
 frames\FrmPrincipal$10.class
 frames\FrmTablaGrafo.class
 ArbolDeExpansionMinima\Kruskal.class
+frames\PnlBoruvka.class
 frames\FrmPrincipal$4.class
 frames\FrmElegirLocalidades.class
 frames\FrmPrincipal$8.class

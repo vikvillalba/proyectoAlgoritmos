@@ -4,6 +4,7 @@
  */
 package ArbolDeExpansionMinima;
 
+import frames.PnlBoruvka;
 import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
@@ -20,6 +21,12 @@ import java.util.Set;
  * @author erika
  */
 public class Boruvka {
+    
+    private static PnlBoruvka panelVisualizacion;
+    
+    public static void setPanelVisualizacion(PnlBoruvka panel) {
+        panelVisualizacion = panel;
+    }
     /**
      * Encuentra el MST usando el algoritmo de Borůvka
      * @return Lista de aristas que forman el MST
@@ -31,24 +38,25 @@ public class Boruvka {
         List<Arista> mst = new ArrayList<>();
         UnionFind uf = new UnionFind(municipios);
         
-        // Continuar hasta que todos los nodos estén conectados
         while (mst.size() < municipios.size() - 1) {
-            // Mapa para guardar la arista más barata para cada componente
             Map<String, Arista> aristasMasBaratas = new HashMap<>();
             
-            // Encontrar la arista más barata para cada componente
             for (Arista arista : todasAristas) {
                 String rootOrigen = uf.find(arista.origen);
                 String rootDestino = uf.find(arista.destino);
                 
                 if (!rootOrigen.equals(rootDestino)) {
-                    // Actualizar arista más barata para el componente de origen
+                    // Notificar evaluación de arista
+                    if (panelVisualizacion != null) {
+                        panelVisualizacion.marcarAristaEvaluada(arista.origen, arista.destino);
+                    }
+                    
+                    // Actualizar aristas más baratas
                     if (!aristasMasBaratas.containsKey(rootOrigen) || 
                         arista.peso < aristasMasBaratas.get(rootOrigen).peso) {
                         aristasMasBaratas.put(rootOrigen, arista);
                     }
                     
-                    // Actualizar arista más barata para el componente de destino
                     if (!aristasMasBaratas.containsKey(rootDestino) || 
                         arista.peso < aristasMasBaratas.get(rootDestino).peso) {
                         aristasMasBaratas.put(rootDestino, arista);
@@ -56,7 +64,7 @@ public class Boruvka {
                 }
             }
             
-            // Agregar las aristas encontradas al MST
+            // Agregar aristas al MST
             for (Arista arista : aristasMasBaratas.values()) {
                 String rootOrigen = uf.find(arista.origen);
                 String rootDestino = uf.find(arista.destino);
@@ -64,8 +72,17 @@ public class Boruvka {
                 if (!rootOrigen.equals(rootDestino)) {
                     mst.add(arista);
                     uf.union(arista.origen, arista.destino);
+                    
+                    // Notificar arista agregada al MST
+                    if (panelVisualizacion != null) {
+                        panelVisualizacion.agregarAristaMST(arista.origen, arista.destino, arista.peso);
+                    }
                 }
             }
+        }
+        
+        if (panelVisualizacion != null) {
+            panelVisualizacion.setProcesoCompleto();
         }
         
         return mst;
@@ -120,4 +137,6 @@ public class Boruvka {
         System.out.printf("Distancia total requerida: %.1f km\n", pesoTotal);
         System.out.println("===========================================================");
     }
+
+    
 }

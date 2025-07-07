@@ -4,7 +4,7 @@
  */
 package frames;
 
-import ArbolDeExpansionMinima.Kruskal;
+import ArbolDeExpansionMinima.Boruvka;
 import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
@@ -21,42 +21,45 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
- *Panel que muestra de manera gráfica el procesamiento del algoritmo Prim para el Arbol de expansion minima
+ * Panel que muestra gráficamente el procesamiento del algoritmo de Borůvka
  * @author erika
  */
-public class PnlKruskal extends javax.swing.JPanel {
-
-    private Grafo grafo; // Grafo a visualizar
-    private Map<String, Point> posiciones; // Coordenadas de cada localidad
-    private Set<String> aristasMST = new HashSet<>(); // Aristas seleccionadas para el MST
-    private Set<String> aristasEvaluadas = new HashSet<>(); // Aristas evaluadas durante el proceso
+public class PnlBoruvka extends javax.swing.JPanel {
+    
+    private Grafo grafo; //Grafo a visualizar
+    private Map<String, Point> posiciones; // coordenadas de cada localidad
+    private Set<String> aristasMST = new HashSet<>(); //aristas del mst
+    private Map<String, String> componentes = new HashMap<>(); // Para mostrar las componentes
     private boolean procesoCompleto = false;
     private double pesoTotal = 0;
+    private int pasoActual = 0;
     /**
-     * Creates new form PnlKruskal
+     * Creates new form PnlBoruvka
      */
-    public PnlKruskal() {
+    public PnlBoruvka() {
         initComponents();
+        
         grafo = GrafoPueblaUtil.getGrafo();
         posiciones = new HashMap<>();
         setBackground(Color.WHITE);
         inicializarPosiciones();
+        inicializarComponentes();
 
         // Iniciar el algoritmo en un hilo separado
         new Thread(() -> {
             try {
-                Thread.sleep(500); // Pequeña pausa para inicialización
-                Kruskal.setPanelVisualizacion(this);
-                Kruskal.mostrarMST(); // Ejecutar el algoritmo
+                Thread.sleep(500); //pausa para que se vea la ejecucion
+                Boruvka.setPanelVisualizacion(this);
+                Boruvka.mostrarMST();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
     }
-    
     /**
      * Agrega al mapa de posiciones las coordenadas de cada localidad.
      */
@@ -106,38 +109,41 @@ public class PnlKruskal extends javax.swing.JPanel {
         posiciones.put("Zacatlán", new Point((int) (330 * escala), 190));
     }
     
+    private void inicializarComponentes() {
+        for (String municipio : GrafoPueblaUtil.getMunicipios()) {
+            componentes.put(municipio, municipio); // Cada nodo es su propio componente inicialmente
+        }
+    }
     /**
      * Método llamado por el algoritmo para agregar una arista al MST
      * @param origen Nodo origen
      * @param destino Nodo destino
      * @param peso Peso de la arista
      */
-    public void agregarAristaMST(String origen, String destino, double peso) {
-        String key = origen.compareTo(destino) < 0 
-                ? origen + "-" + destino : destino + "-" + origen;
+     public void agregarAristaMST(String origen, String destino, double peso) {
+        String key = origen.compareTo(destino) < 0 ? origen + "-" + destino : destino + "-" + origen;
         aristasMST.add(key);
         pesoTotal += peso;
+        
+        // Actualizar componentes conectadas
+        String raizOrigen = encontrarRaiz(origen);
+        String raizDestino = encontrarRaiz(destino);
+        componentes.put(raizDestino, raizOrigen);
+        
+        pasoActual++;
         repaint();
         
-        // Pequeña pausa para visualización paso a paso
-        try { Thread.sleep(800); } catch (InterruptedException e) {}
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
     }
-    
     /**
-     * metodo llamado por el algoritmo para marcar una arista como evaluada
+     * Metodo para para marcar una arista como evaluada
      * @param origen Nodo origen
      * @param destino Nodo destino
      */
     public void marcarAristaEvaluada(String origen, String destino) {
-        String key = origen.compareTo(destino) < 0 
-                ? origen + "-" + destino : destino + "-" + origen;
-        aristasEvaluadas.add(key);
         repaint();
-        
-        // pausa para visualizacion
         try { Thread.sleep(300); } catch (InterruptedException e) {}
     }
-    
     /**
      * Marca el proceso como completo
      */
@@ -146,30 +152,37 @@ public class PnlKruskal extends javax.swing.JPanel {
         repaint();
     }
     
+    private String encontrarRaiz(String nodo) {
+        while (!componentes.get(nodo).equals(nodo)) {
+            nodo = componentes.get(nodo);
+        }
+        return nodo;
+    }
+    /**
+     * Para dibujar el grafo y que este vaya cambiando de color a como se va ejecutando
+     * @param g 
+     */
     @Override
     protected void paintComponent(Graphics g) {
-       super.paintComponent(g);
-       Graphics2D g2d = (Graphics2D) g;
-       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-       // Dibujar todas las aristas en gris claro
-       g2d.setColor(new Color(200, 200, 200));
-       dibujarAristas(g2d, false, false);
+        // Dibujar todas las aristas en gris
+        g2d.setColor(new Color(200, 200, 200));
+        dibujarAristas(g2d, false, false);
 
-       //Dibujar aristas evaluadas en amarillo
-       g2d.setColor(Color.ORANGE);
-       dibujarAristas(g2d, true, false);
+        // Dibujar aristas del MST en rojo
+        g2d.setColor(new Color(208, 104, 119));
+        g2d.setStroke(new BasicStroke(3));
+        dibujarAristas(g2d, false, true);
+        g2d.setStroke(new BasicStroke(1));
 
-       //dibujar aristas del MST en rojo (al final para que sobresalgan)
-       g2d.setColor(new Color(208, 104, 119));
-       g2d.setStroke(new BasicStroke(3));
-       dibujarAristas(g2d, false, true);
-       g2d.setStroke(new BasicStroke(1));
+        // Dibujar nodos coloreados por componente
+        dibujarNodos(g2d);
 
-       //dibujar nodos y texto
-       dibujarNodos(g2d);
-       dibujarInformacion(g2d);
-
+        // Dibujar información
+        dibujarInformacion(g2d);
     }
     /**
      * Metodo para dibujar las aristas graficamente en el panel
@@ -194,19 +207,12 @@ public class PnlKruskal extends javax.swing.JPanel {
                             ? origen.getNombre() + "-" + adyacente.getNombre()
                             : adyacente.getNombre() + "-" + origen.getNombre();
 
-                    boolean dibujar = false;
-                    if (soloEvaluadas) {
-                        dibujar = aristasEvaluadas.contains(key);
-                    } else if (soloMST) {
-                        dibujar = aristasMST.contains(key);
-                    } else {
-                        dibujar = true;
-                    }
+                    boolean dibujar = soloMST ? aristasMST.contains(key) : true;
 
                     if (dibujar) {
                         g2d.drawLine(posOrigen.x, posOrigen.y, posDestino.x, posDestino.y);
 
-                        // Dibujar el peso de la arista
+                        // Dibujar peso
                         int midX = (posOrigen.x + posDestino.x) / 2;
                         int midY = (posOrigen.y + posDestino.y) / 2;
                         g2d.drawString(String.valueOf((int) adyacente.getPeso()), midX, midY);
@@ -215,40 +221,48 @@ public class PnlKruskal extends javax.swing.JPanel {
             }
         }
     }
-
+    /**
+     * metodo para mostrar los nodos graficamente
+     * @param g2d 
+     */
     private void dibujarNodos(Graphics2D g2d) {
         g2d.setFont(new Font("Arial", Font.BOLD, 12));
+
+        
 
         for (Map.Entry<String, Point> entry : posiciones.entrySet()) {
             String nombre = entry.getKey();
             Point posicion = entry.getValue();
+            String raiz = encontrarRaiz(nombre);
 
-            // Color del nodo
-            Color colorNodo = new Color(200, 200, 200); // Gris por defecto
-            if (procesoCompleto) {
-                // Después de completar, nodos conectados en el MST
-                if (estaEnMST(nombre)) {
-                    colorNodo = new Color(241, 192, 192); // Rojo claro
-                }
+           // Asignar colores únicos a cada componente
+        // Color del nodo
+        Color colorNodo = new Color(200, 200, 200); // Gris por defecto
+        if (procesoCompleto) {
+            // Después de completar, nodos conectados en el MST
+            if (estaEnMST(nombre)) {
+                colorNodo = new Color(241, 192, 192); // Rojo claro
             }
+         }
+            
 
-            // Dibujar el círculo del nodo
+            // Dibujar el círculo
             int radio = 20;
             g2d.setColor(colorNodo);
             g2d.fillOval(posicion.x - (radio / 2), posicion.y - (radio / 2), radio, radio);
 
-            // Dibujar el borde
+            // Borde
             g2d.setColor(Color.BLACK);
             g2d.drawOval(posicion.x - (radio / 2), posicion.y - (radio / 2), radio, radio);
 
-            // Dibujar el nombre del nodo
+            // Nombre
             FontMetrics fm = g2d.getFontMetrics();
             int textoX = posicion.x - (fm.stringWidth(nombre) / 2);
             int textoY = posicion.y + (fm.getHeight() / 4);
             g2d.drawString(nombre, textoX, textoY);
         }
     }
-
+    
     private boolean estaEnMST(String nombreNodo) {
         for (String arista : aristasMST) {
             if (arista.contains(nombreNodo)) {
@@ -257,18 +271,26 @@ public class PnlKruskal extends javax.swing.JPanel {
         }
         return false;
     }
-
+    /**
+     * metodo para mostrar la informacion en pantalla a como se va ejecutando el algoritmo
+     * @param g2d 
+     */
     private void dibujarInformacion(Graphics2D g2d) {
         g2d.setFont(new Font("Arial", Font.BOLD, 14));
         g2d.setColor(Color.BLACK);
 
-        String estado = procesoCompleto ? "COMPLETO" : "EN PROCESO";
+        String estado = procesoCompleto ? "COMPLETO" : "PASO " + pasoActual;
         g2d.drawString("Estado: " + estado, 20, 30);
         g2d.drawString("Aristas en MST: " + aristasMST.size(), 20, 50);
         g2d.drawString("Peso total: " + (int) pesoTotal + " km", 20, 70);
+        
+        // Mostrar componentes conectadas
+        Set<String> componentesUnicas = new HashSet<>();
+        for (String municipio : componentes.keySet()) {
+            componentesUnicas.add(encontrarRaiz(municipio));
+        }
+        g2d.drawString("Componentes: " + componentesUnicas.size(), 20, 90);
     }
-
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -293,7 +315,7 @@ public class PnlKruskal extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-   
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

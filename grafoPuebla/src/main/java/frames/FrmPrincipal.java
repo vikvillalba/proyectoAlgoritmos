@@ -282,6 +282,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void btnBoruvkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBoruvkaActionPerformed
         this.setTitle("Grafo del estado de Puebla - MST Borůvka");
+        PnlBoruvka panelBoruvka = new PnlBoruvka();
+        pintarContenedor(panelBoruvka);
     }//GEN-LAST:event_btnBoruvkaActionPerformed
 
     private void btnBellmanFordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellmanFordActionPerformed
