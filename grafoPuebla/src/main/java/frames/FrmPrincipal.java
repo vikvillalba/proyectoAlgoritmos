@@ -272,6 +272,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void btnKruskalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKruskalActionPerformed
         this.setTitle("Grafo del estado de Puebla - MST Kruskal");
+        PnlKruskal panelKruskal = new PnlKruskal();
+        pintarContenedor(panelKruskal);
     }//GEN-LAST:event_btnKruskalActionPerformed
 
     private void btnPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimActionPerformed

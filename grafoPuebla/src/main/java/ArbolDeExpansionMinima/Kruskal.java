@@ -4,6 +4,7 @@
  */
 package ArbolDeExpansionMinima;
 
+import frames.PnlKruskal;
 import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
@@ -18,7 +19,11 @@ import java.util.List;
  */
 public class Kruskal {
     
+    private static PnlKruskal panelVisualizacion;
     
+    public static void setPanelVisualizacion(PnlKruskal panel) {
+        panelVisualizacion = panel;
+    }
     /**
      * Encuentra el arbol de expansion minima (MST) usando el algoritmo de Kruskal.
      * @return Lista de aristas que forman el MST
@@ -47,13 +52,27 @@ public class Kruskal {
         
         // Algoritmo de Kruskal
         for (Arista arista : aristas) {
+            // Notificar al panel que esta arista está siendo evaluada
+            if (panelVisualizacion != null) {
+                panelVisualizacion.marcarAristaEvaluada(arista.origen, arista.destino);
+            }
+            
             String rootOrigen = uf.find(arista.origen);
             String rootDestino = uf.find(arista.destino);
             
             if (!rootOrigen.equals(rootDestino)) {
                 mst.add(arista);
                 uf.union(arista.origen, arista.destino);
+                
+                // Notificar al panel que esta arista fue agregada al MST
+                if (panelVisualizacion != null) {
+                    panelVisualizacion.agregarAristaMST(arista.origen, arista.destino, arista.peso);
+                }
             }
+        }
+        
+        if (panelVisualizacion != null) {
+            panelVisualizacion.setProcesoCompleto();
         }
         
         return mst;

@@ -15,6 +15,7 @@ ArbolDeExpansionMinima\Prim.class
 frames\FrmPrincipal$6.class
 frames\FrmElegirLocalidades$1.class
 frames\FrmPrincipal$11.class
+frames\PnlKruskal.class
 frames\PnlInicio.class
 frames\FrmPrincipal$10.class
 frames\FrmTablaGrafo.class
