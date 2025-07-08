@@ -26,23 +26,24 @@ public class PnlInicio extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
-        jLabel1.setText("texto d prueba luego lo quito salu2");
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        jLabel1.setText("Seleccione una opción del menú para iniciar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(602, 602, 602)
+                .addGap(410, 410, 410)
                 .addComponent(jLabel1)
-                .addContainerGap(995, Short.MAX_VALUE))
+                .addContainerGap(683, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(329, 329, 329)
+                .addGap(354, 354, 354)
                 .addComponent(jLabel1)
-                .addContainerGap(554, Short.MAX_VALUE))
+                .addContainerGap(502, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
