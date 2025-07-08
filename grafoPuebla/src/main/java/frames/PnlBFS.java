@@ -9,23 +9,69 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.SwingUtilities;
 
+/**
+ * <p>
+ * Panel de visualización para el <strong>recorrido en anchura (BFS)</strong>
+ * sobre el grafo de localidades del estado de Puebla.</p>
+ *
+ * <p>
+ * Este panel dibuja los nodos y aristas del grafo, y actualiza la visualización
+ * en tiempo real conforme el algoritmo BFS visita vértices y aristas, además de
+ * mostrar la ruta final encontrada (si existe).</p>
+ *
+ * <p>
+ * Actúa como observador del algoritmo BFS, el cual invoca los métodos de esta
+ * clase para actualizar el estado de la interfaz.</p>
+ */
 public class PnlBFS extends javax.swing.JPanel {
 
-
-    /* ------------------ Estado interno ------------------ */
+    /**
+     * Estructura del grafo general.
+     */
     private final Grafo grafo;
+
+    /**
+     * Coordenadas gráficas de cada nodo (localidad).
+     */
     private final Map<String, Point> posiciones = new HashMap<>();
 
+    /**
+     * Nodo inicial del recorrido BFS.
+     */
     private final String inicio;
+
+    /**
+     * Nodo destino objetivo del recorrido.
+     */
     private final String fin;
 
+    /**
+     * Conjunto de nodos que ya han sido visitados.
+     */
     private final Set<String> nodosVisitados = new HashSet<>();
+
+    /**
+     * Aristas ya recorridas (clave: "A-B" o "B-A").
+     */
     private final Set<String> aristasVisitadas = new HashSet<>();
+
+    /**
+     * Ruta final encontrada por el BFS.
+     */
     private LinkedList<Nodo> rutaFinal = new LinkedList<>();
+
+    /**
+     * Indica si el algoritmo terminó.
+     */
     private boolean procesoCompleto = false;
 
-    /* ---------------------------------------------------- */
-
+    /**
+     * Constructor: inicializa el panel, carga el grafo y lanza el BFS en un
+     * hilo aparte.
+     *
+     * @param inicio nombre del nodo de inicio
+     * @param fin nombre del nodo destino
+     */
     public PnlBFS(String inicio, String fin) {
         this.inicio = inicio;
         this.fin = fin;
@@ -50,7 +96,9 @@ public class PnlBFS extends javax.swing.JPanel {
         }).start();
     }
 
-    /* ------------------ Métodos que el algoritmo invoca ------------------ */
+    /**
+     * Limpia todos los estados para reiniciar la visualización.
+     */
     public void reiniciarProceso() {
         SwingUtilities.invokeLater(() -> {
             nodosVisitados.clear();
@@ -61,11 +109,22 @@ public class PnlBFS extends javax.swing.JPanel {
         });
     }
 
+    /**
+     * Marca visualmente un nodo como visitado.
+     *
+     * @param nombreNodo nombre del nodo visitado
+     */
     public void marcarNodoVisitado(String nombreNodo) {
         nodosVisitados.add(nombreNodo);
         repaint();
     }
 
+    /**
+     * Marca visualmente una arista como visitada.
+     *
+     * @param origen nodo origen
+     * @param destino nodo destino
+     */
     public void marcarAristaVisitada(String origen, String destino) {
         String key = origen.compareTo(destino) < 0 ? origen + "-" + destino
                 : destino + "-" + origen;
@@ -73,6 +132,11 @@ public class PnlBFS extends javax.swing.JPanel {
         repaint();
     }
 
+    /**
+     * Define la ruta final encontrada por el algoritmo.
+     *
+     * @param ruta lista de nodos que forman el camino final
+     */
     public void setRutaFinal(LinkedList<Nodo> ruta) {
         SwingUtilities.invokeLater(() -> {
             this.rutaFinal = ruta;
@@ -81,9 +145,11 @@ public class PnlBFS extends javax.swing.JPanel {
         });
     }
 
-    /* -------------------------------------------------------------------- */
-
- /* ------------------------ Dibujo ------------------------------------ */
+    /**
+     * Dibuja el contenido del panel (nodos, aristas y ruta).
+     *
+     * @param g el contexto gráfico
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -110,6 +176,13 @@ public class PnlBFS extends javax.swing.JPanel {
         dibujarNodos(g2d);
     }
 
+    /**
+     * Dibuja las aristas del grafo.
+     *
+     * @param g2d contexto gráfico
+     * @param soloVisitadas si es true, solo dibuja las que están en
+     * aristasVisitadas
+     */
     private void dibujarAristas(Graphics2D g2d, boolean soloVisitadas) {
         for (LinkedList<Nodo> lista : grafo.getGrafo()) {
             if (lista.isEmpty()) {
@@ -137,6 +210,11 @@ public class PnlBFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Dibuja la ruta final si se ha encontrado una.
+     *
+     * @param g2d contexto gráfico
+     */
     private void dibujarRutaFinal(Graphics2D g2d) {
         for (int i = 0; i < rutaFinal.size() - 1; i++) {
             Point a = posiciones.get(rutaFinal.get(i).getNombre());
@@ -147,6 +225,16 @@ public class PnlBFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Dibuja los nodos con su respectivo color:
+     * <ul>
+     * <li>Rosa si está en la ruta final</li>
+     * <li>Naranja si fue visitado</li>
+     * <li>Gris si no ha sido visitado</li>
+     * </ul>
+     *
+     * @param g2d contexto gráfico
+     */
     private void dibujarNodos(Graphics2D g2d) {
         for (var entry : posiciones.entrySet()) {
             String nombre = entry.getKey();
@@ -172,13 +260,20 @@ public class PnlBFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Verifica si un nodo está en la ruta final.
+     *
+     * @param nombre nombre del nodo
+     * @return true si está en la ruta
+     */
     private boolean rutaContiene(String nombre) {
         return rutaFinal.stream().anyMatch(n -> n.getNombre().equals(nombre));
     }
 
-    /* -------------------------------------------------------------------- */
-
- /* ---------------- Posiciones de nodos ---------------- */
+    /**
+     * Establece las posiciones X, Y (en píxeles) para cada localidad. Se usa un
+     * factor de escala para ajustar al panel.
+     */
     private void inicializarPosiciones() {
         double k = 2;  // escala  (ajusta si necesitas mover el dibujo)
         posiciones.put("Acajete", new Point((int) (345 * k), 444));

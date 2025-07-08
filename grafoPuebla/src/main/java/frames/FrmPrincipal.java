@@ -56,6 +56,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnBellmanFord = new javax.swing.JMenuItem();
         btnDijkstra = new javax.swing.JMenuItem();
         btnReportesComplejidad = new javax.swing.JMenu();
+        btnKruskalReporte = new javax.swing.JMenuItem();
+        btnPrimReporte = new javax.swing.JMenuItem();
+        btnBoruvkaReporte = new javax.swing.JMenuItem();
+        btnBellmanFordReporte = new javax.swing.JMenuItem();
+        btnDijkstraReporte = new javax.swing.JMenuItem();
+        btnBFSReporte = new javax.swing.JMenuItem();
+        btnDFSReporte = new javax.swing.JMenuItem();
         btnSalir = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -104,7 +111,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnGrafo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGrafo.setPreferredSize(new java.awt.Dimension(150, 23));
 
-        btnTablaNodosAristas.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnTablaNodosAristas.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnTablaNodosAristas.setText("Tabla de vértices y aristas");
         btnTablaNodosAristas.setPreferredSize(new java.awt.Dimension(209, 40));
         btnTablaNodosAristas.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +121,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         btnGrafo.add(btnTablaNodosAristas);
 
-        btnGrafico.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnGrafico.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnGrafico.setText("Vista gráfica");
         btnGrafico.setPreferredSize(new java.awt.Dimension(131, 40));
         btnGrafico.addActionListener(new java.awt.event.ActionListener() {
@@ -132,7 +139,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         bntRecorridos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         bntRecorridos.setPreferredSize(new java.awt.Dimension(150, 23));
 
-        btnBFS.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnBFS.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnBFS.setText("BFS (anchura)");
         btnBFS.setPreferredSize(new java.awt.Dimension(128, 40));
         btnBFS.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +149,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         bntRecorridos.add(btnBFS);
 
-        btnDFS.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnDFS.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnDFS.setText("DFS (profundidad)");
         btnDFS.setPreferredSize(new java.awt.Dimension(153, 40));
         btnDFS.addActionListener(new java.awt.event.ActionListener() {
@@ -160,7 +167,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnMST.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnMST.setPreferredSize(new java.awt.Dimension(300, 23));
 
-        btnKruskal.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnKruskal.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnKruskal.setText("Kruskal");
         btnKruskal.setPreferredSize(new java.awt.Dimension(128, 40));
         btnKruskal.addActionListener(new java.awt.event.ActionListener() {
@@ -170,7 +177,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         btnMST.add(btnKruskal);
 
-        btnPrim.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnPrim.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnPrim.setText("Prim");
         btnPrim.setPreferredSize(new java.awt.Dimension(74, 40));
         btnPrim.addActionListener(new java.awt.event.ActionListener() {
@@ -180,7 +187,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         btnMST.add(btnPrim);
 
-        btnBoruvka.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnBoruvka.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnBoruvka.setText("Borůvka");
         btnBoruvka.setPreferredSize(new java.awt.Dimension(96, 40));
         btnBoruvka.addActionListener(new java.awt.event.ActionListener() {
@@ -198,7 +205,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         btnRuta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnRuta.setPreferredSize(new java.awt.Dimension(200, 23));
 
-        btnBellmanFord.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnBellmanFord.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnBellmanFord.setText("Bellman-Ford");
         btnBellmanFord.setPreferredSize(new java.awt.Dimension(126, 40));
         btnBellmanFord.addActionListener(new java.awt.event.ActionListener() {
@@ -208,7 +215,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         btnRuta.add(btnBellmanFord);
 
-        btnDijkstra.setFont(new java.awt.Font("Beirut", 0, 14)); // NOI18N
+        btnDijkstra.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         btnDijkstra.setText("Dijkstra");
         btnDijkstra.setPreferredSize(new java.awt.Dimension(92, 40));
         btnDijkstra.addActionListener(new java.awt.event.ActionListener() {
@@ -231,6 +238,70 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 btnReportesComplejidadMouseClicked(evt);
             }
         });
+
+        btnKruskalReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnKruskalReporte.setText("Kruskal");
+        btnKruskalReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKruskalReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnKruskalReporte);
+
+        btnPrimReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnPrimReporte.setText("Prim");
+        btnPrimReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrimReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnPrimReporte);
+
+        btnBoruvkaReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnBoruvkaReporte.setText("Boruvka");
+        btnBoruvkaReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBoruvkaReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnBoruvkaReporte);
+
+        btnBellmanFordReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnBellmanFordReporte.setText("Bellman-Ford");
+        btnBellmanFordReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBellmanFordReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnBellmanFordReporte);
+
+        btnDijkstraReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnDijkstraReporte.setText("Dijkstra");
+        btnDijkstraReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDijkstraReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnDijkstraReporte);
+
+        btnBFSReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnBFSReporte.setText("BFS");
+        btnBFSReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBFSReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnBFSReporte);
+
+        btnDFSReporte.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        btnDFSReporte.setText("DFS");
+        btnDFSReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDFSReporteActionPerformed(evt);
+            }
+        });
+        btnReportesComplejidad.add(btnDFSReporte);
+
         menu.add(btnReportesComplejidad);
 
         btnSalir.setBorder(null);
@@ -317,20 +388,69 @@ public class FrmPrincipal extends javax.swing.JFrame {
         elegirLocalidad.setVisible(true);
     }//GEN-LAST:event_btnDFSActionPerformed
 
+    private void btnBoruvkaReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBoruvkaReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de Boruvka");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "BORUVKA");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnBoruvkaReporteActionPerformed
+
+    private void btnBellmanFordReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellmanFordReporteActionPerformed
+        this.setTitle("Reporte de complejidad del Bellman-Ford");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "BELLMANFORD");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnBellmanFordReporteActionPerformed
+
+    private void btnBFSReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBFSReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de BFS");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "BFS");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnBFSReporteActionPerformed
+
+    private void btnKruskalReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKruskalReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de Kruskal");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "KRUSKAL");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnKruskalReporteActionPerformed
+
+    private void btnPrimReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de Prim");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "PRIM");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnPrimReporteActionPerformed
+
+    private void btnDijkstraReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDijkstraReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de Dijkstra");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "DIJKSTRA");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnDijkstraReporteActionPerformed
+
+    private void btnDFSReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDFSReporteActionPerformed
+        this.setTitle("Reporte de complejidad del algoritmo de DFS");
+        PnlReporteComplejidad panelComplejidad = new PnlReporteComplejidad(this , "DFS");
+        pintarContenedor(panelComplejidad);
+    }//GEN-LAST:event_btnDFSReporteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu bntRecorridos;
     private javax.swing.JMenuItem btnBFS;
+    private javax.swing.JMenuItem btnBFSReporte;
     private javax.swing.JMenuItem btnBellmanFord;
+    private javax.swing.JMenuItem btnBellmanFordReporte;
     private javax.swing.JMenuItem btnBoruvka;
+    private javax.swing.JMenuItem btnBoruvkaReporte;
     private javax.swing.JMenuItem btnDFS;
+    private javax.swing.JMenuItem btnDFSReporte;
     private javax.swing.JMenuItem btnDijkstra;
+    private javax.swing.JMenuItem btnDijkstraReporte;
     private javax.swing.JMenuItem btnGrafico;
     private javax.swing.JMenu btnGrafo;
     private javax.swing.JMenu btnInicio;
     private javax.swing.JMenuItem btnKruskal;
+    private javax.swing.JMenuItem btnKruskalReporte;
     private javax.swing.JMenu btnMST;
     private javax.swing.JMenuItem btnPrim;
+    private javax.swing.JMenuItem btnPrimReporte;
     private javax.swing.JMenu btnReportesComplejidad;
     private javax.swing.JMenu btnRuta;
     private javax.swing.JMenu btnSalir;

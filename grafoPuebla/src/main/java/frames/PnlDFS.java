@@ -11,21 +11,81 @@ import javax.swing.SwingUtilities;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * <p>
+ * Panel de visualización para el <strong>recorrido en profundidad
+ * (DFS)</strong>
+ * sobre el grafo de localidades de Puebla.</p>
+ *
+ * <p>
+ * El panel:</p>
+ * <ul>
+ * <li>Dibuja los vértices (localidades) en posiciones predefinidas.</li>
+ * <li>Pinta las aristas visitadas durante la ejecución del DFS.</li>
+ * <li>Resalta la ruta final cuando el algoritmo alcanza el nodo destino.</li>
+ * </ul>
+ *
+ * <p>
+ * La clase actúa como observador: el algoritmo DFS (implementado en
+ * {@code busqueda.DFS}) llama a los métodos {@link #marcarNodoVisitado(String)},
+ * {@link #marcarAristaVisitada(String, String)} y
+ * {@link #setRutaFinal(java.util.LinkedList)} para ir actualizando la
+ * visualización.</p>
+ */
 public class PnlDFS extends javax.swing.JPanel {
 
-    /* --------- Estructura y estado (idéntico al de BFS) --------- */
+    /* -------------------------------------------------------------------------
+     * Atributos de estado
+     * ---------------------------------------------------------------------- */
+    /**
+     * Grafo completo (obtenido desde el utilitario).
+     */
     private final Grafo grafo;
+
+    /**
+     * Coordenadas de cada vértice para el dibujo.
+     */
     private final Map<String, Point> posiciones = new HashMap<>();
 
+    /**
+     * Nombre del vértice de inicio.
+     */
     private final String inicio;
+
+    /**
+     * Nombre del vértice de destino.
+     */
     private final String fin;
 
+    /**
+     * Conjunto de vértices ya visitados.
+     */
     private final Set<String> nodosVisitados = new HashSet<>();
+
+    /**
+     * Conjunto de aristas ya visitadas (clave «A-B» con A&lt;B).
+     */
     private final Set<String> aristasVisitadas = new HashSet<>();
+
+    /**
+     * Ruta final devuelta por el DFS (vacía hasta que termina).
+     */
     private LinkedList<Nodo> rutaFinal = new LinkedList<>();
+
+    /**
+     * Marca si el DFS ha concluido totalmente.
+     */
     private boolean procesoCompleto = false;
 
-    /* ------------------------------------------------------------ */
+    /* -------------------------------------------------------------------------
+     * Constructor
+     * ---------------------------------------------------------------------- */
+    /**
+     * Crea el panel y lanza el DFS en un hilo separado.
+     *
+     * @param inicio vértice de partida
+     * @param fin vértice de llegada
+     */
     public PnlDFS(String inicio, String fin) {
         this.inicio = inicio;
         this.fin = fin;
@@ -48,7 +108,10 @@ public class PnlDFS extends javax.swing.JPanel {
         }).start();
     }
 
-    /* ------------------ Callbacks para DFS ------------------ */
+    /**
+     * Vuelve a estado inicial limpiando nodos, aristas y ruta. Se invoca si se
+     * requiere reiniciar la visualización.
+     */
     public void reiniciarProceso() {
         SwingUtilities.invokeLater(() -> {
             nodosVisitados.clear();
@@ -59,11 +122,22 @@ public class PnlDFS extends javax.swing.JPanel {
         });
     }
 
+    /**
+     * Marca un vértice como visitado y repinta el panel.
+     *
+     * @param nombreNodo nombre del vértice visitado
+     */
     public void marcarNodoVisitado(String nombreNodo) {
         nodosVisitados.add(nombreNodo);
         repaint();
     }
 
+    /**
+     * Marca una arista como visitada y repinta el panel.
+     *
+     * @param origen vértice origen
+     * @param destino vértice destino
+     */
     public void marcarAristaVisitada(String origen, String destino) {
         String key = origen.compareTo(destino) < 0 ? origen + "-" + destino
                 : destino + "-" + origen;
@@ -71,6 +145,11 @@ public class PnlDFS extends javax.swing.JPanel {
         repaint();
     }
 
+    /**
+     * Indica la ruta final encontrada y marca el proceso como completado.
+     *
+     * @param ruta lista enlazada con los vértices en orden de la ruta
+     */
     public void setRutaFinal(LinkedList<Nodo> ruta) {
         SwingUtilities.invokeLater(() -> {
             this.rutaFinal = ruta;
@@ -79,9 +158,11 @@ public class PnlDFS extends javax.swing.JPanel {
         });
     }
 
-    /* -------------------------------------------------------- */
-
- /* --------------- Dibujo (idéntico al panel BFS) --------------- */
+    /**
+     * Dibuja el contenido del panel (nodos, aristas y ruta).
+     *
+     * @param g el contexto gráfico
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -102,6 +183,13 @@ public class PnlDFS extends javax.swing.JPanel {
         dibujarNodos(g2d);
     }
 
+    /**
+     * Dibuja las aristas del grafo.
+     *
+     * @param g2d contexto gráfico
+     * @param soloVisitadas {@code true} para pintar únicamente las aristas
+     * contenidas en {@link #aristasVisitadas}
+     */
     private void dibujarAristas(Graphics2D g2d, boolean soloVisitadas) {
         for (LinkedList<Nodo> lista : grafo.getGrafo()) {
             if (!lista.isEmpty()) {
@@ -122,6 +210,11 @@ public class PnlDFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Dibuja la ruta final hallada por el DFS.
+     *
+     * @param g2d contexto gráfico
+     */
     private void dibujarRutaFinal(Graphics2D g2d) {
         for (int i = 0; i < rutaFinal.size() - 1; i++) {
             Point a = posiciones.get(rutaFinal.get(i).getNombre());
@@ -132,6 +225,16 @@ public class PnlDFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Dibuja los vértices con su color según el estado:
+     * <ul>
+     * <li>Ruta final: rosa</li>
+     * <li>Visitado: naranja claro</li>
+     * <li>No visitado: gris</li>
+     * </ul>
+     *
+     * @param g2d contexto gráfico
+     */
     private void dibujarNodos(Graphics2D g2d) {
         for (var e : posiciones.entrySet()) {
             String n = e.getKey();
@@ -148,11 +251,20 @@ public class PnlDFS extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Indica si un vértice forma parte de la {@link #rutaFinal}.
+     *
+     * @param nombre nombre del vértice a comprobar
+     * @return {@code true} si la ruta final contiene el vértice
+     */
     private boolean rutaContiene(String n) {
         return rutaFinal.stream().anyMatch(v -> v.getNombre().equals(n));
     }
 
-    /* ---------------- Posiciones de nodos ---------------- */
+    /**
+     * Carga en {@link #posiciones} las coordenadas aproximadas de cada
+     * localidad (escaladas para ajustarse al lienzo).
+     */
     private void inicializarPosiciones() {
         double k = 2;  // escala  (ajusta si necesitas mover el dibujo)
         posiciones.put("Acajete", new Point((int) (345 * k), 444));
@@ -197,11 +309,6 @@ public class PnlDFS extends javax.swing.JPanel {
         posiciones.put("Zacatlán", new Point((int) (330 * k), 190));
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
