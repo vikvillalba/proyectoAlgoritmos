@@ -277,10 +277,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void btnPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimActionPerformed
         this.setTitle("Grafo del estado de Puebla - MST Prim");
+        FrmElegirCiudadInicial frmCuidad = new FrmElegirCiudadInicial(this);
+        frmCuidad.setVisible(true);
     }//GEN-LAST:event_btnPrimActionPerformed
 
     private void btnBoruvkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBoruvkaActionPerformed
         this.setTitle("Grafo del estado de Puebla - MST Borůvka");
+        PnlBoruvka boruvka = new PnlBoruvka();
+        pintarContenedor(boruvka);
     }//GEN-LAST:event_btnBoruvkaActionPerformed
 
     private void btnBellmanFordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellmanFordActionPerformed

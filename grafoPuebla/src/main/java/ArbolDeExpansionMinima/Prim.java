@@ -4,6 +4,7 @@
  */
 package ArbolDeExpansionMinima;
 
+import frames.PnlPrim;
 import grafo.Grafo;
 import grafo.GrafoPueblaUtil;
 import grafo.Nodo;
@@ -22,6 +23,12 @@ import java.util.Set;
  * @author erika
  */
 public class Prim {
+    
+    private static PnlPrim panelVisualizacion;
+    
+    public static void setPanelVisualizacion(PnlPrim panel) {
+        panelVisualizacion = panel;
+    }
     /**
      * Encuentra el MST usando el algoritmo de Prim
      * @param ciudadInicial Nombre de la ciudad donde comenzará el algoritmo
@@ -49,27 +56,43 @@ public class Prim {
             pesoMinimo.put(municipio, Double.POSITIVE_INFINITY);
         }
         
-        // Comenzar con la ciudad inicial
+         // Comenzar con la ciudad inicial
         pesoMinimo.put(ciudadInicial, 0.0);
         colaPrioridad.add(new NodoAdy(ciudadInicial, 0));
         
+        if (panelVisualizacion != null) {
+            panelVisualizacion.agregarNodoAMST(ciudadInicial);
+        }
+
         while (!colaPrioridad.isEmpty()) {
             String actual = colaPrioridad.poll().getNombre();
             
-            // Evitar procesar nodos ya incluidos
             if (enMST.contains(actual)) continue;
             
             enMST.add(actual);
             
+            // Notificar al panel
+            if (panelVisualizacion != null && !actual.equals(ciudadInicial)) {
+                panelVisualizacion.agregarNodoAMST(actual);
+            }
+
             // Agregar arista al MST (excepto para el nodo inicial)
             if (conexionMinima.containsKey(actual)) {
                 mst.add(new Arista(
                     conexionMinima.get(actual), 
                     actual, 
-                    pesoMinimo.get(actual)
-                ));
+                    pesoMinimo.get(actual))
+                );
+                
+                if (panelVisualizacion != null) {
+                    panelVisualizacion.agregarAristaAMST(
+                        conexionMinima.get(actual), 
+                        actual, 
+                        pesoMinimo.get(actual)
+                    );
+                }
             }
-            
+
             // Explorar vecinos
             Nodo nodoActual = grafo.buscarNodo(actual);
             for (NodoAdy vecino : nodoActual.getAdyacentes()) {
@@ -80,8 +103,16 @@ public class Prim {
                     pesoMinimo.put(nombreVecino, peso);
                     conexionMinima.put(nombreVecino, actual);
                     colaPrioridad.add(new NodoAdy(nombreVecino, peso));
+                    
+                    if (panelVisualizacion != null) {
+                        panelVisualizacion.marcarAristaEvaluada(actual, nombreVecino);
+                    }
                 }
             }
+        }
+        
+        if (panelVisualizacion != null) {
+            panelVisualizacion.setProcesoCompleto();
         }
         
         return mst;
