@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import rutaMasCorta.BellmanFord;
 
 /**
- * Panel que muestra de manera gráfica el procesamiento del algoritmo dijkstra
+ * Panel que muestra de manera gráfica el procesamiento del algoritmo bellman-ford
  *
  * @author victoria
  */

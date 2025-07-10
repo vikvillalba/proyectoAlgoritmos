@@ -117,9 +117,9 @@ public class Grafo {
      * @return El nodo encontrado o null si no existe
      */
     public Nodo buscarNodo(String nombre) {
-        for (int i = 0; i < cantNodos; i++) {
-            if (!grafo[i].isEmpty() && grafo[i].getFirst().getNombre().equals(nombre)) {
-                return grafo[i].getFirst();
+        for (int i = 0; i < cantNodos; i++) { 
+            if (!grafo[i].isEmpty() && grafo[i].getFirst().getNombre().equals(nombre)) { 
+                return grafo[i].getFirst(); 
             }
         }
         return null;

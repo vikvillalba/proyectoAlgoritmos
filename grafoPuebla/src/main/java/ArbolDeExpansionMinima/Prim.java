@@ -35,57 +35,57 @@ public class Prim {
      * @return Lista de aristas que forman el MST
      */
     public static List<Arista> encontrarMST(String ciudadInicial) {
-        Grafo grafo = GrafoPueblaUtil.getGrafo();
-        List<Arista> mst = new ArrayList<>();
+        Grafo grafo = GrafoPueblaUtil.getGrafo(); // 1 + 1
+        List<Arista> mst = new ArrayList<>(); // 1 + 1
         
         // Verificar que la ciudad inicial existe
-        if (grafo.buscarNodo(ciudadInicial) == null) {
-            throw new IllegalArgumentException("La ciudad inicial no existe en el grafo");
+        if (grafo.buscarNodo(ciudadInicial) == null) { // 8n + 4 + 1
+            throw new IllegalArgumentException("La ciudad inicial no existe en el grafo"); // 2
         }
         
         // Estructuras para el algoritmo
-        PriorityQueue<NodoAdy> colaPrioridad = new PriorityQueue<>(
-            Comparator.comparingDouble(NodoAdy::getPeso)
+        PriorityQueue<NodoAdy> colaPrioridad = new PriorityQueue<>( // 2
+            Comparator.comparingDouble(NodoAdy::getPeso) // 2
         );
-        Set<String> enMST = new HashSet<>();
-        Map<String, String> conexionMinima = new HashMap<>();
-        Map<String, Double> pesoMinimo = new HashMap<>();
+        Set<String> enMST = new HashSet<>(); // 2
+        Map<String, String> conexionMinima = new HashMap<>(); // 2
+        Map<String, Double> pesoMinimo = new HashMap<>(); // 2
         
         // Inicializar estructuras
-        for (String municipio : GrafoPueblaUtil.getMunicipios()) {
-            pesoMinimo.put(municipio, Double.POSITIVE_INFINITY);
+        for (String municipio : GrafoPueblaUtil.getMunicipios()) { // n + n
+            pesoMinimo.put(municipio, Double.POSITIVE_INFINITY); // n
         }
         
          // Comenzar con la ciudad inicial
-        pesoMinimo.put(ciudadInicial, 0.0);
-        colaPrioridad.add(new NodoAdy(ciudadInicial, 0));
+        pesoMinimo.put(ciudadInicial, 0.0); // 1
+        colaPrioridad.add(new NodoAdy(ciudadInicial, 0)); // 6
         
-        if (panelVisualizacion != null) {
-            panelVisualizacion.agregarNodoAMST(ciudadInicial);
+        if (panelVisualizacion != null) { // 1
+            panelVisualizacion.agregarNodoAMST(ciudadInicial); // 4
         }
 
-        while (!colaPrioridad.isEmpty()) {
-            String actual = colaPrioridad.poll().getNombre();
+        while (!colaPrioridad.isEmpty()) { // n + 1
+            String actual = colaPrioridad.poll().getNombre(); // 3n 
             
-            if (enMST.contains(actual)) continue;
+            if (enMST.contains(actual)) continue; // 2n
             
-            enMST.add(actual);
+            enMST.add(actual); //n
             
             // Notificar al panel
-            if (panelVisualizacion != null && !actual.equals(ciudadInicial)) {
-                panelVisualizacion.agregarNodoAMST(actual);
+            if (panelVisualizacion != null && !actual.equals(ciudadInicial)) { //1
+                panelVisualizacion.agregarNodoAMST(actual); // 4
             }
 
             // Agregar arista al MST (excepto para el nodo inicial)
-            if (conexionMinima.containsKey(actual)) {
+            if (conexionMinima.containsKey(actual)) { //2n
                 mst.add(new Arista(
                     conexionMinima.get(actual), 
                     actual, 
                     pesoMinimo.get(actual))
-                );
+                ); // 4n
                 
-                if (panelVisualizacion != null) {
-                    panelVisualizacion.agregarAristaAMST(
+                if (panelVisualizacion != null) { // n
+                    panelVisualizacion.agregarAristaAMST( // 7n
                         conexionMinima.get(actual), 
                         actual, 
                         pesoMinimo.get(actual)
@@ -94,28 +94,28 @@ public class Prim {
             }
 
             // Explorar vecinos
-            Nodo nodoActual = grafo.buscarNodo(actual);
-            for (NodoAdy vecino : nodoActual.getAdyacentes()) {
-                String nombreVecino = vecino.getNombre();
-                double peso = vecino.getPeso();
+            Nodo nodoActual = grafo.buscarNodo(actual); // 8n + 5
+            for (NodoAdy vecino : nodoActual.getAdyacentes()) { // n + 4n + 5
+                String nombreVecino = vecino.getNombre(); // 2n
+                double peso = vecino.getPeso(); // 2n
                 
-                if (!enMST.contains(nombreVecino) && peso < pesoMinimo.get(nombreVecino)) {
-                    pesoMinimo.put(nombreVecino, peso);
-                    conexionMinima.put(nombreVecino, actual);
-                    colaPrioridad.add(new NodoAdy(nombreVecino, peso));
+                if (!enMST.contains(nombreVecino) && peso < pesoMinimo.get(nombreVecino)) { // 2n
+                    pesoMinimo.put(nombreVecino, peso); //n
+                    conexionMinima.put(nombreVecino, actual); //n
+                    colaPrioridad.add(new NodoAdy(nombreVecino, peso)); // 6n
                     
-                    if (panelVisualizacion != null) {
-                        panelVisualizacion.marcarAristaEvaluada(actual, nombreVecino);
+                    if (panelVisualizacion != null) { // n
+                        panelVisualizacion.marcarAristaEvaluada(actual, nombreVecino); // 4n
                     }
                 }
             }
         }
         
-        if (panelVisualizacion != null) {
-            panelVisualizacion.setProcesoCompleto();
+        if (panelVisualizacion != null) { // 1
+            panelVisualizacion.setProcesoCompleto(); // 2
         }
         
-        return mst;
+        return mst; // 1
     }
     
     /**
