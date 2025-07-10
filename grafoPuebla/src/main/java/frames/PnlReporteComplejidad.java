@@ -70,7 +70,61 @@ public class PnlReporteComplejidad extends javax.swing.JPanel {
                                 "O(V + E)", // mejor caso
                                 "O(V + E)" // caso promedio
                         ));
-                areaCodigo.setText("");
+                areaCodigo.setText("\n"
+                        + "    /**\n"
+                        + "     * Ejecuta el algoritmo BFS desde un nodo de inicio hasta un nodo destino.\n"
+                        + "     *\n"
+                        + "     * @param inicio nombre del nodo de origen\n"
+                        + "     * @param fin nombre del nodo destino\n"
+                        + "     * @return una lista enlazada con los nodos que forman la ruta encontrada, o\n"
+                        + "     * una lista vacía si no existe camino entre ambos\n"
+                        + "     */\n"
+                        + "    public static LinkedList<Nodo> ejecutar(String inicio, String fin) { // 1\n"
+                        + "\n"
+                        + "        if (panelVisualizacion != null) {                  // 1\n"
+                        + "            panelVisualizacion.reiniciarProceso();         // 1\n"
+                        + "        }\n"
+                        + "\n"
+                        + "        Grafo grafo = GrafoPueblaUtil.getGrafo();          // 1\n"
+                        + "        Nodo origen = grafo.buscarNodo(inicio);            // 8n + 4 + 1\n"
+                        + "        Nodo destino = grafo.buscarNodo(fin);              // 8n + 4 + 1\n"
+                        + "\n"
+                        + "        if (origen == null || destino == null) {           // 1\n"
+                        + "            return new LinkedList<>();                     // 1\n"
+                        + "        }\n"
+                        + "\n"
+                        + "        Queue<Nodo> cola = new ArrayDeque<>();             // 1\n"
+                        + "        Set<String> visitados = new HashSet<>();           // 1\n"
+                        + "        Map<String, Nodo> antecesor = new HashMap<>();     // 1\n"
+                        + "\n"
+                        + "        cola.add(origen);                                  // 1\n"
+                        + "        visitados.add(origen.getNombre());                 // 1\n"
+                        + "        marcarNodo(origen.getNombre());                    // 1\n"
+                        + "\n"
+                        + "        while (!cola.isEmpty()) {                          // hasta n veces → n\n"
+                        + "\n"
+                        + "            Nodo actual = cola.poll();                     // n\n"
+                        + "\n"
+                        + "            for (NodoAdy ady = actual.getSiguiente(); ady != null; ady = ady.getSiguiente()) { // hasta grado(n) veces → en total 2n^2\n"
+                        + "                Nodo vecino = grafo.buscarNodo(ady.getNombre());        // 8n^2 + 5n\n"
+                        + "                if (vecino != null && visitados.add(vecino.getNombre())) { // 2n\n"
+                        + "\n"
+                        + "                    antecesor.put(vecino.getNombre(), actual);          // n\n"
+                        + "                    cola.add(vecino);                                   // n\n"
+                        + "\n"
+                        + "                    marcarArista(actual.getNombre(), vecino.getNombre()); // n\n"
+                        + "                    marcarNodo(vecino.getNombre());                     // n\n"
+                        + "                    pausar();                                           // n\n"
+                        + "                }\n"
+                        + "            }\n"
+                        + "        }\n"
+                        + "\n"
+                        + "        LinkedList<Nodo> ruta = reconstruirRuta(origen, destino, antecesor); // 1\n"
+                        + "        if (panelVisualizacion != null) {                    // 1\n"
+                        + "            panelVisualizacion.setRutaFinal(ruta);           // 1\n"
+                        + "        }\n"
+                        + "        return ruta;                                          // 1\n"
+                        + "    }");
                 break;
 
             case "DFS":
@@ -461,26 +515,289 @@ public class PnlReporteComplejidad extends javax.swing.JPanel {
                 algoritmoLabel.setText("Prim – Árbol de Expansión Mínima");
                 textoDescripcionLabel.setText(
                         html(
-                                "Comienza en un vértice y añade iterativamente la arista más ligera "
-                                + "que expande el árbol parcial, usando cola de prioridad.",
-                                "O(E log V) con <i>heap</i> binario",
-                                "O(E) – si el grafo ya es un árbol (E = V‑1)",
-                                "≈ O(E log V)"
-                        ));
-                areaCodigo.setText("");
+                                "Inicia desde un vértice y expande el árbol de expansión mínima agregando la arista más ligera hacia un nodo no visitado, usando una cola de prioridad sin heap binario.",
+                                "O(n²) (peor caso – debido a exploración lineal en estructuras como la cola y mapas)",
+                                "Ω(1) (mejor caso – grafo con un solo nodo y sin vecinos)",
+                                "Θ(n²) (caso promedio – grafos con múltiples adyacencias y sin heap optimizado)"
+                        )
+                );
+
+                areaCodigo.setText("""
+                                       /**
+                                        * Encuentra el MST usando el algoritmo de Prim
+                                        * @param ciudadInicial Nombre de la ciudad donde comenzar\u00e1 el algoritmo
+                                        * @return Lista de aristas que forman el MST
+                                        * T(n) = 67n + 35
+                                        */
+                                       public static List<Arista> encontrarMST(String ciudadInicial) {
+                                           Grafo grafo = GrafoPueblaUtil.getGrafo(); // 1 + 1
+                                           List<Arista> mst = new ArrayList<>(); // 1 + 1
+                                           
+                                           // Verificar que la ciudad inicial existe
+                                           if (grafo.buscarNodo(ciudadInicial) == null) { // 8n + 4 + 1
+                                               throw new IllegalArgumentException("La ciudad inicial no existe en el grafo"); // 2
+                                           }
+                                           
+                                           // Estructuras para el algoritmo
+                                           PriorityQueue<NodoAdy> colaPrioridad = new PriorityQueue<>( // 2
+                                               Comparator.comparingDouble(NodoAdy::getPeso) // 2
+                                           );
+                                           Set<String> enMST = new HashSet<>(); // 2
+                                           Map<String, String> conexionMinima = new HashMap<>(); // 2
+                                           Map<String, Double> pesoMinimo = new HashMap<>(); // 2
+                                           
+                                           // Inicializar estructuras
+                                           for (String municipio : GrafoPueblaUtil.getMunicipios()) { // n + n
+                                               pesoMinimo.put(municipio, Double.POSITIVE_INFINITY); // n
+                                           }
+                                           
+                                            // Comenzar con la ciudad inicial
+                                           pesoMinimo.put(ciudadInicial, 0.0); // 1
+                                           colaPrioridad.add(new NodoAdy(ciudadInicial, 0)); // 6
+                                           
+                                           if (panelVisualizacion != null) { // 1
+                                               panelVisualizacion.agregarNodoAMST(ciudadInicial); // 4
+                                           }
+                                   
+                                           while (!colaPrioridad.isEmpty()) { // n + 1
+                                               String actual = colaPrioridad.poll().getNombre(); // 3n 
+                                               
+                                               if (enMST.contains(actual)) continue; // 2n
+                                               
+                                               enMST.add(actual); //n
+                                               
+                                               // Notificar al panel
+                                               if (panelVisualizacion != null && !actual.equals(ciudadInicial)) { //1
+                                                   panelVisualizacion.agregarNodoAMST(actual); // 4
+                                               }
+                                   
+                                               // Agregar arista al MST (excepto para el nodo inicial)
+                                               if (conexionMinima.containsKey(actual)) { //2n
+                                                   mst.add(new Arista(
+                                                       conexionMinima.get(actual), 
+                                                       actual, 
+                                                       pesoMinimo.get(actual))
+                                                   ); // 4n
+                                                   
+                                                   if (panelVisualizacion != null) { // n
+                                                       panelVisualizacion.agregarAristaAMST( // 7n
+                                                           conexionMinima.get(actual), 
+                                                           actual, 
+                                                           pesoMinimo.get(actual)
+                                                       );
+                                                   }
+                                               }
+                                   
+                                               // Explorar vecinos
+                                               Nodo nodoActual = grafo.buscarNodo(actual); // 8n + 5
+                                               for (NodoAdy vecino : nodoActual.getAdyacentes()) { // n + 4n + 5
+                                                   String nombreVecino = vecino.getNombre(); // 2n
+                                                   double peso = vecino.getPeso(); // 2n
+                                                   
+                                                   if (!enMST.contains(nombreVecino) && peso < pesoMinimo.get(nombreVecino)) { // 2n
+                                                       pesoMinimo.put(nombreVecino, peso); //n
+                                                       conexionMinima.put(nombreVecino, actual); //n
+                                                       colaPrioridad.add(new NodoAdy(nombreVecino, peso)); // 6n
+                                                       
+                                                       if (panelVisualizacion != null) { // n
+                                                           panelVisualizacion.marcarAristaEvaluada(actual, nombreVecino); // 4n
+                                                       }
+                                                   }
+                                               }
+                                           }
+                                           
+                                           if (panelVisualizacion != null) { // 1
+                                               panelVisualizacion.setProcesoCompleto(); // 2
+                                           }
+                                           
+                                           return mst; // 1
+                                       }""");
                 break;
 
             case "BORUVKA":
                 algoritmoLabel.setText("Borůvka – Árbol de Expansión Mínima");
                 textoDescripcionLabel.setText(
                         html(
-                                "Opera por fases paralelas: cada componente elige la arista más ligera "
-                                + "hacia otra componente y todas se añaden simultáneamente.",
-                                "O(E log V)",
-                                "O(E) – si V es potencia de dos y se fusiona en una sola fase",
-                                "≈ O(E log V)"
-                        ));
-                areaCodigo.setText("");
+                                "Busca iterativamente la arista más barata que conecta cada componente, uniendo varios nodos en paralelo por fase. Utiliza estructuras eficientes como Union-Find y mapas de mínima conexión.",
+                                "O(log n × (m + n)) (peor caso – múltiples fases uniendo componentes y recorriendo todas las aristas en cada una)",
+                                "Ω(m) (mejor caso – grafo ya casi conectado, requiere solo una fase de selección de aristas)",
+                                "Θ(log n × (m + n)) (caso promedio – unión progresiva de componentes con aristas dispersas)"
+                        )
+                );
+
+                areaCodigo.setText("    /** \n"
+                        + "\n"
+                        + "     * Encuentra el MST usando el algoritmo de Borůvka \n"
+                        + "\n"
+                        + "     * @return Lista de aristas que forman el MST \n"
+                        + "\n"
+                        + "     */ \n"
+                        + "\n"
+                        + "    public static List<Arista> encontrarMST() { \n"
+                        + "\n"
+                        + "        Grafo grafo = GrafoPueblaUtil.getGrafo();      // 1 op \n"
+                        + "\n"
+                        + "        List<String> municipios = GrafoPueblaUtil.getMunicipios();         // n elementos \n"
+                        + "\n"
+                        + "        List<Arista> todasAristas = obtenerTodasAristas(grafo);           // 2 + n + 10m \n"
+                        + "\n"
+                        + "        List<Arista> mst = new ArrayList<>();                                                     // 1 op \n"
+                        + "\n"
+                        + "        UnionFind uf = new UnionFind(municipios);                                    // n inicializaciones \n"
+                        + "\n"
+                        + "         \n"
+                        + "\n"
+                        + "        while (mst.size() < municipios.size() - 1) {                      // Este ciclo se ejecuta log₂(n) veces                                                                                                   -                                                                                                                                    en el peor caso \n"
+                        + "\n"
+                        + "            Map<String, Arista> aristasMasBaratas = new HashMap<>();     // 1 \n"
+                        + "\n"
+                        + "             \n"
+                        + "\n"
+                        + "            for (Arista arista : todasAristas) {                                       // m iteraciones \n"
+                        + "\n"
+                        + "                String rootOrigen = uf.find(arista.origen);                      // 1 op \n"
+                        + "\n"
+                        + "                String rootDestino = uf.find(arista.destino);                   // 1 op \n"
+                        + "\n"
+                        + "                 \n"
+                        + "\n"
+                        + "                if (!rootOrigen.equals(rootDestino)) {                                                           //3 \n"
+                        + "\n"
+                        + "                    // Notificar evaluación de arista \n"
+                        + "\n"
+                        + "                    if (panelVisualizacion != null) {                                                                     //1 \n"
+                        + "\n"
+                        + "                        panelVisualizacion.marcarAristaEvaluada(arista.origen, arista.destino); \n"
+                        + "\n"
+                        + "                    } \n"
+                        + "\n"
+                        + "                     \n"
+                        + "\n"
+                        + "                    // Actualizar aristas más baratas \n"
+                        + "\n"
+                        + "                    if (!aristasMasBaratas.containsKey(rootOrigen) ||  \n"
+                        + "\n"
+                        + "                        arista.peso < aristasMasBaratas.get(rootOrigen).peso) {       //5 \n"
+                        + "\n"
+                        + "                        aristasMasBaratas.put(rootOrigen, arista);            //2 \n"
+                        + "\n"
+                        + "                    } \n"
+                        + "\n"
+                        + "                     \n"
+                        + "\n"
+                        + "                    if (!aristasMasBaratas.containsKey(rootDestino) ||  \n"
+                        + "\n"
+                        + "                        arista.peso < aristasMasBaratas.get(rootDestino).peso) {        //7 \n"
+                        + "\n"
+                        + "                        aristasMasBaratas.put(rootDestino, arista);  // 1 \n"
+                        + "\n"
+                        + "                    } \n"
+                        + "\n"
+                        + "                } \n"
+                        + "\n"
+                        + "            } \n"
+                        + "\n"
+                        + "             \n"
+                        + "\n"
+                        + "            // Agregar aristas al MST \n"
+                        + "\n"
+                        + "            for (Arista arista : aristasMasBaratas.values()) {             // recorre hasta 2n aristas  \n"
+                        + "\n"
+                        + "                String rootOrigen = uf.find(arista.origen);                              // 1 op \n"
+                        + "\n"
+                        + "                String rootDestino = uf.find(arista.destino);                        // 1 op \n"
+                        + "\n"
+                        + "                 \n"
+                        + "\n"
+                        + "                if (!rootOrigen.equals(rootDestino)) {                               //2 \n"
+                        + "\n"
+                        + "                    mst.add(arista);                                                               // 1 op \n"
+                        + "\n"
+                        + "                    uf.union(arista.origen, arista.destino);             // 1 op \n"
+                        + "\n"
+                        + "                     \n"
+                        + "\n"
+                        + "                    // Notificar arista agregada al MST \n"
+                        + "\n"
+                        + "                    if (panelVisualizacion != null) {                               \n"
+                        + "\n"
+                        + "                        panelVisualizacion.agregarAristaMST(arista.origen, arista.destino, arista.peso); \n"
+                        + "\n"
+                        + "                    } \n"
+                        + "\n"
+                        + " \n"
+                        + "\n"
+                        + "                } \n"
+                        + "\n"
+                        + "            } \n"
+                        + "\n"
+                        + "        } \n"
+                        + "\n"
+                        + "         \n"
+                        + "\n"
+                        + "        if (panelVisualizacion != null) { \n"
+                        + "\n"
+                        + "            panelVisualizacion.setProcesoCompleto(); \n"
+                        + "\n"
+                        + "        } \n"
+                        + "\n"
+                        + "         \n"
+                        + "\n"
+                        + "        return mst; \n"
+                        + "\n"
+                        + "    } \n"
+                        + "\n"
+                        + " \n"
+                        + "\n"
+                        + "T(n) Final de encontrarMST() (incluyendo llamada a obtenerTodasAristas()) \n"
+                        + "\n"
+                        + "T(n)=4+3n+10m+6logn⋅(m+n)     \n"
+                        + "\n"
+                        + "    /** \n"
+                        + "\n"
+                        + "     * Obtiene todas las aristas del grafo sin duplicados \n"
+                        + "\n"
+                        + "     * @param grafo Grafo de Puebla \n"
+                        + "\n"
+                        + "     * @return Lista de todas las aristas únicas \n"
+                        + "\n"
+                        + "     */ \n"
+                        + "\n"
+                        + "    private static List<Arista> obtenerTodasAristas(Grafo grafo) { \n"
+                        + "\n"
+                        + "        List<Arista> aristas = new ArrayList<>();      // 1 operación \n"
+                        + "\n"
+                        + "        Set<String> aristasAgregadas = new HashSet<>();         // 1 operación \n"
+                        + "\n"
+                        + "         \n"
+                        + "\n"
+                        + "for (Nodo nodo : grafo.getNodos()) {                              // n iteraciones \n"
+                        + "\n"
+                        + "    String origen = nodo.getNombre();                             // 1 op \n"
+                        + "\n"
+                        + "    for (NodoAdy ady : nodo.getAdyacentes()) {                    // depende del grado: sumatorio de grados = 2m \n"
+                        + "\n"
+                        + "        String destino = ady.getNombre();                         // 1 op \n"
+                        + "\n"
+                        + "        String clave = ...                                        // 2-3 ops: compare + concat \n"
+                        + "\n"
+                        + "        if (!aristasAgregadas.contains(clave)) {                  // 1 op \n"
+                        + "\n"
+                        + "            aristas.add(new Arista(...));                         // 1 op \n"
+                        + "\n"
+                        + "            aristasAgregadas.add(clave);                          // 1 op \n"
+                        + "\n"
+                        + "        } \n"
+                        + "\n"
+                        + "    } \n"
+                        + "\n"
+                        + "        } \n"
+                        + "\n"
+                        + "         \n"
+                        + "\n"
+                        + "        return aristas; \n"
+                        + "\n"
+                );
             default:
                 algoritmoLabel.setText(algoritmo);
                 textoDescripcionLabel.setText(
